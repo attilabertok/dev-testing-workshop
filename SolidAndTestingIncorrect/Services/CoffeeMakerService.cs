@@ -1,31 +1,20 @@
-﻿namespace SolidAndTestingIncorrect.ViewModels;
+﻿using SolidAndTestingIncorrect.Domain;
 
-public class CoffeeMakerService
+namespace SolidAndTestingIncorrect.Services;
+
+public class CoffeeMakerService : CoffeeMakerServiceBase
 {
-    public const int WaterCapacity = 1200;
-    public const int BeansCapacity = 1200;
     public const int MilkCapacity = 600;
     public const int MaxBrewsBetweenCleans = 20;
     public const int MaxBrewsBetweenDescales = 100;
 
-    public int CurrentWaterAmount { get; private set; }
-    public int CurrentBeansAmount { get; private set; }
     public int CurrentMilkAmount { get; private set; }
-    public bool IsOn { get; private set; }
     public bool IsKeepingWarm { get; private set; }
     public int ConfiguredTemperature { get; private set; }
     public CoffeeStrength Strength { get; private set; }
     public int BrewsSinceLastClean { get; private set; }
     public int BrewsSinceLastDescale { get; private set; }
 
-    public ICoffee BrewEspresso()
-    {
-        var beverage = new Espresso();
-
-        Brew(beverage);
-
-        return beverage;
-    }
 
     public ICoffee BrewFilterCoffee()
     {
@@ -63,36 +52,6 @@ public class CoffeeMakerService
         return beverage;
     }
 
-    public void AddWater(int amount)
-    {
-        switch (amount)
-        {
-            case < 0:
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Water amount must be greater than 0.");
-            case > WaterCapacity:
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Water amount must be less than {WaterCapacity}.");
-        }
-
-        CurrentWaterAmount += CurrentWaterAmount + amount > WaterCapacity
-            ? throw new ArgumentException("Amount exceeds water capacity.")
-            : amount;
-    }
-
-    public void AddBeans(int amount)
-    {
-        switch (amount)
-        {
-            case < 0:
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, "Beans amount must be greater than 0.");
-            case > BeansCapacity:
-                throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Beans amount must be less than {BeansCapacity}.");
-        }
-
-        CurrentBeansAmount += CurrentBeansAmount + amount > BeansCapacity
-            ? throw new ArgumentException("Amount exceeds beans capacity.")
-            : amount;
-    }
-
     public void AddMilk(int amount)
     {
         switch (amount)
@@ -116,16 +75,6 @@ public class CoffeeMakerService
     public void Descale()
     {
         BrewsSinceLastDescale = 0;
-    }
-
-    public void TurnOn()
-    {
-        IsOn = true;
-    }
-
-    public void TurnOff()
-    {
-        IsOn = false;
     }
 
     public void KeepWarm()
@@ -159,15 +108,6 @@ public class CoffeeMakerService
         return BrewsSinceLastClean >= MaxBrewsBetweenCleans || BrewsSinceLastDescale >= MaxBrewsBetweenDescales;
     }
 
-    private bool HasEnoughIngredientsFor(ICoffee coffee)
-    {
-        var extraBeans = CalculateExtraBeans(coffee);
-
-        return CurrentWaterAmount >= coffee.RequiredWater
-               && CurrentBeansAmount >= (coffee.RequiredBeans + extraBeans)
-               && CurrentMilkAmount >= coffee.RequiredMilk;
-    }
-
     private static int CalculateExtraBeans(ICoffee coffee)
     {
         return coffee.Strength switch
@@ -179,7 +119,7 @@ public class CoffeeMakerService
         };
     }
 
-    private void Brew(ICoffee beverage)
+    protected override void Brew(ICoffee beverage)
     {
         if (!CanBrew())
         {
@@ -188,16 +128,20 @@ public class CoffeeMakerService
 
         beverage.Strength = (CoffeeStrength)Math.Max((int)beverage.Strength, (int)Strength);
 
-        if (!HasEnoughIngredientsFor(beverage))
-        {
-            throw new InvalidOperationException($"Not enough ingredients to brew {beverage.Name}.");
-        }
+        base.Brew(beverage);
 
         IsKeepingWarm = false;
-        CurrentWaterAmount -= beverage.RequiredWater;
-        CurrentBeansAmount -= beverage.RequiredBeans;
         CurrentMilkAmount -= beverage.RequiredMilk;
         BrewsSinceLastClean++;
         BrewsSinceLastDescale++;
+    }
+
+    protected override bool HasEnoughIngredientsFor(ICoffee beverage)
+    {
+        var extraBeans = CalculateExtraBeans(beverage);
+
+        return CurrentWaterAmount >= beverage.RequiredWater
+               && CurrentBeansAmount >= (beverage.RequiredBeans + extraBeans)
+               && CurrentMilkAmount >= beverage.RequiredMilk;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SolidAndTestingIncorrect.ViewModels;
+﻿namespace SolidAndTestingIncorrect.Domain;
 
 public class Cappuccino : ICoffee
 {

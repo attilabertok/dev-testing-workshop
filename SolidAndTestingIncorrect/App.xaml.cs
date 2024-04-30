@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Prism.Ioc;
 using Prism.Unity;
+using SolidAndTestingIncorrect.Services;
 using SolidAndTestingIncorrect.ViewModels;
 using SolidAndTestingIncorrect.Views;
 
