@@ -2,7 +2,7 @@
 
 namespace SolidAndTestingIncorrect.Services;
 
-public class CoffeeMakerServiceBase
+public abstract class CoffeeMakerServiceBase
 {
     public const int WaterCapacity = 1200;
     public const int BeansCapacity = 1200;
@@ -19,6 +19,8 @@ public class CoffeeMakerServiceBase
 
         return beverage;
     }
+
+    public abstract ICoffee BrewCappuccino();
 
     public void TurnOn()
     {

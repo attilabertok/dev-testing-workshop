@@ -28,7 +28,7 @@ public class SimpleCoffeeMakerService : CoffeeMakerServiceBase
     }
 
 
-    public ICoffee BrewCappuccino()
+    public override ICoffee BrewCappuccino()
     {
         throw new InvalidOperationException("This simple machine cannot brew a beverage that contains milk");
     }
