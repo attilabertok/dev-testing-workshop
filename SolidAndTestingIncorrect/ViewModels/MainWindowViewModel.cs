@@ -6,7 +6,7 @@ namespace SolidAndTestingIncorrect.ViewModels;
 
 public class MainWindowViewModel : BindableBase
 {
-    private readonly ICoffeeMakerService coffeeMakerService;
+    private readonly CoffeeMakerService coffeeMakerService;
     private string title = "Prism Unity Application wat";
     public string Title
     {
@@ -18,7 +18,7 @@ public class MainWindowViewModel : BindableBase
     {
     }
 
-    public MainWindowViewModel(ICoffeeMakerService coffeeMakerService)
+    public MainWindowViewModel(CoffeeMakerService coffeeMakerService)
     {
         this.coffeeMakerService = coffeeMakerService;
     }

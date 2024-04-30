@@ -18,6 +18,6 @@ public partial class App : PrismApplication
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-        containerRegistry.RegisterSingleton<ICoffeeMakerService, CoffeeMakerService>();
+        containerRegistry.RegisterSingleton<CoffeeMakerService>();
     }
 }

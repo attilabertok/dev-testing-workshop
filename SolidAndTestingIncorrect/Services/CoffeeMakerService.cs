@@ -1,6 +1,6 @@
 ﻿namespace SolidAndTestingIncorrect.ViewModels;
 
-public class CoffeeMakerService : ICoffeeMakerService
+public class CoffeeMakerService
 {
     public const int WaterCapacity = 1200;
     public const int BeansCapacity = 1200;
